@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Scene Card</title>
+  <link rel="stylesheet" href="./scene-card.css">
+
+  <!-- Import map: THREE.js + SparkJS share one instance -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three":             "https://esm.sh/three@0.178.0",
+      "three/":            "https://esm.sh/three@0.178.0/",
+      "@sparkjsdev/spark": "https://sparkjs.dev/releases/spark/0.1.10/spark.module.js"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Loading screen -->
+  <div id="loading-screen">
+    <div class="loading-spinner"></div>
+    <div id="loading-text">场景加载中…</div>
+  </div>
+
+  <!-- Scene background layers (crossfade during transitions) -->
+  <div id="bg-a" class="scene-bg"></div>
+  <div id="bg-b" class="scene-bg" style="opacity:0"></div>
+
+  <!-- Card -->
+  <div id="app">
+    <div id="card-wrapper">
+
+      <!-- Halo: red glow behind 3D scene -->
+      <div id="halo"></div>
+
+      <!-- Layer 0: Splat scene (masked) -->
+      <div id="card"></div>
+
+      <!-- Scene A layer group (active on load) -->
+      <div id="layers-a" class="scene-layers">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+      </div>
+
+      <!-- Scene B layer group (used during transitions) -->
+      <div id="layers-b" class="scene-layers">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+        <img class="card-layer" alt="" draggable="false" style="display:none">
+      </div>
+
+    </div>
+
+    <!-- Scene selector buttons -->
+    <div id="scene-buttons">
+      <div class="scene-btn active" data-idx="0">
+        <div class="btn-layers">
+          <img class="btn-icon" src="./files/icon1.webp" alt="" draggable="false">
+          <img class="btn-overlay" src="./files/selected.webp" alt="" draggable="false">
+        </div>
+        <span class="btn-label">浪漫满怀</span>
+      </div>
+      <div class="scene-btn" data-idx="1">
+        <div class="btn-layers">
+          <img class="btn-icon" src="./files/icon2.webp" alt="" draggable="false">
+          <img class="btn-overlay" src="./files/unselected.webp" alt="" draggable="false">
+        </div>
+        <span class="btn-label">一眼心动</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Title -->
+  <img id="title" src="./files/title.webp" alt="" draggable="false">
+
+  <!-- Gyroscope toggle button -->
+  <button id="gyro-btn" aria-label="陀螺仪">
+    <svg viewBox="0 0 24 24">
+      <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
+    </svg>
+  </button>
+
+  <script type="module" src="./scene-card.js"></script>
+</body>
+</html>
