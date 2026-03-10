@@ -271,6 +271,16 @@ body.scene-fullscreen #title {
   pointer-events: none;
 }
 
+/* Remove card mask and hide parallax layers in fullscreen */
+body.scene-fullscreen #card canvas {
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+
+body.scene-fullscreen .scene-layers {
+  display: none;
+}
+
 /* ── Fullscreen close button ── */
 #fs-close-btn {
   position: fixed;
@@ -278,8 +288,8 @@ body.scene-fullscreen #title {
   left: 20px;
   width: 44px; height: 44px;
   border-radius: 22px;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.08);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   display: none;
@@ -290,7 +300,7 @@ body.scene-fullscreen #title {
   padding: 0;
   outline: none;
   opacity: 0;
-  transition: opacity 0.35s ease, background 0.15s ease;
+  transition: opacity 0.35s ease, background 0.15s ease, border-color 0.15s ease;
 }
 
 body.scene-fullscreen #fs-close-btn {
@@ -300,7 +310,7 @@ body.scene-fullscreen #fs-close-btn {
 
 #fs-close-btn:active { background: rgba(255,255,255,0.18); }
 #fs-close-btn svg  { width: 20px; height: 20px; }
-#fs-close-btn path { fill: rgba(255,255,255,0.85); }
+#fs-close-btn path { fill: rgba(255,255,255,0.7); }
 
 /* ── Cinematic flash overlay ── */
 #fs-flash {

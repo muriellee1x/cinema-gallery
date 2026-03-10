@@ -23,6 +23,7 @@ const SCENES = [
     splatX:      0,
     splatY:      0,
     splatZ:      -1,   // 沿 Z 轴平移 splat（正值=靠近相机，负值=远离相机）
+    fsSplatZ:    0,   // 全屏模式下的 splat Z（独立调整）
     haloColor:   'rgba(127, 0, 0, 0.75)',
     layers: [
       './files/scene1/layer1.webp',
@@ -45,9 +46,10 @@ const SCENES = [
     splat:       './files/3D/sharp_scene2.sog',
     camera:      './camera-scene.json',
     focalOffset: 0,
-    splatX:      0.15,
-    splatY:      0.1,
+    splatX:      0.05,
+    splatY:      0,
     splatZ:      -1,   // 沿 Z 轴平移 splat（正值=靠近相机，负值=远离相机）
+    fsSplatZ:    0,   // 全屏模式下的 splat Z（独立调整）
     haloColor:   'rgba(210, 127, 164, 0.65)',
     layers: [
       './files/scene2/layer1.webp',
@@ -510,6 +512,12 @@ function enterFullscreen() {
     isFullscreen = true;
     document.body.classList.add('scene-fullscreen');
 
+    // Apply fullscreen-specific splat Z for current scene
+    if (currentSplatMesh) {
+      const cfg = SCENES[currentSceneIdx];
+      currentSplatMesh.position.z = cfg.fsSplatZ ?? cfg.splatZ ?? 0;
+    }
+
     // Reset orbit to neutral so scene starts centered
     touchDA = touchDB = 0;
     alpha = beta = targetA = targetB = 0;
@@ -530,6 +538,12 @@ function exitFullscreen() {
   setTimeout(() => {
     isFullscreen = false;
     document.body.classList.remove('scene-fullscreen');
+
+    // Restore normal splat Z for current scene
+    if (currentSplatMesh) {
+      const cfg = SCENES[currentSceneIdx];
+      currentSplatMesh.position.z = cfg.splatZ ?? 0;
+    }
 
     // Reset orbit so card returns to neutral tilt
     touchDA = touchDB = 0;
