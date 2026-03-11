@@ -194,7 +194,7 @@ function applySceneAssets(cfg, groupId = null) {
   });
 }
 
-// ── Init (scene 0) ──
+// ── Init (scene 0, preload all 3D assets) ──
 async function init() {
   const cfg        = SCENES[0];
   const params     = await loadCameraParams(cfg.camera);
@@ -227,20 +227,41 @@ async function init() {
   });
   scene.add(spark);
 
-  // Load splat
-  console.log(`[init] loading splat: ${cfg.splat}`);
-  const splatMesh = new Spark.SplatMesh({
-    url:      cfg.splat,
-    fileType: 'pcsogszip',
-  });
-  splatMesh.quaternion.set(1, 0, 0, 0);
-  splatMesh.position.set(cfg.splatX ?? 0, cfg.splatY ?? 0, cfg.splatZ ?? 0);
-  scene.add(splatMesh);
-  currentSplatMesh = splatMesh;
+  // ── 预加载所有场景的 3D splat 文件，全部就绪后再显示页面 ──
+  const total = SCENES.length;
+  let loadedCount = 0;
 
-  await splatMesh.initialized;
-  console.log(`[init] splat loaded: ${cfg.splat}, numSplats=${splatMesh.numSplats}`);
+  const updateProgress = () => {
+    loadingText.textContent = `场景加载中… ${loadedCount} / ${total}`;
+  };
+  updateProgress();
+
+  // 同时创建所有场景的 SplatMesh 并加入 scene（并行下载+初始化）
+  const allSplatMeshes = SCENES.map(scn => {
+    const mesh = new Spark.SplatMesh({ url: scn.splat, fileType: 'pcsogszip' });
+    mesh.quaternion.set(1, 0, 0, 0);
+    mesh.position.set(scn.splatX ?? 0, scn.splatY ?? 0, scn.splatZ ?? 0);
+    scene.add(mesh);
+    return mesh;
+  });
+
+  // 等待所有 splat 完成初始化，逐个更新进度
+  await Promise.all(
+    allSplatMeshes.map((mesh, i) =>
+      mesh.initialized.then(() => {
+        loadedCount++;
+        updateProgress();
+        console.log(`[init] splat loaded (${loadedCount}/${total}): ${SCENES[i].splat}, numSplats=${mesh.numSplats}`);
+      })
+    )
+  );
+
+  // 仅保留场景 0 的 mesh，其余从 scene 移除（文件已缓存，切换时重建很快）
+  allSplatMeshes.slice(1).forEach(mesh => scene.remove(mesh));
+
+  const splatMesh = allSplatMeshes[0];
   splatMesh.scale.setScalar(SPLAT_SCALE);
+  currentSplatMesh = splatMesh;
 
   applyPivotZ(cfg.pivotZ);
   applySceneAssets(cfg);
