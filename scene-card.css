@@ -129,6 +129,7 @@ html, body {
   aspect-ratio: 1;
   border-radius: 10px;
   overflow: hidden;
+  background: rgba(40, 30, 20, 0.85);
 }
 
 .btn-icon,
@@ -152,6 +153,7 @@ html, body {
   inset: 0;
   width: 100%;
   height: 100%;
+  opacity: 0.85;
 }
 
 .btn-label {
