@@ -47,13 +47,13 @@ const SCENES = [
     mask:        './files/scene2/card-mask-alpha.webp',
     splat:       './files/3D/sharp_scene2.sog',
     camera:      './camera-scene.json',
-    focalOffset:   0,
-    fsFocalOffset: 20, // 全屏模式下的焦距偏移（正值=缩小FOV=放大画面）
+    focalOffset:   20,
+    fsFocalOffset: 30, // 全屏模式下的焦距偏移（正值=缩小FOV=放大画面）
     splatX:      0.05,
     splatY:      0,
     splatZ:      -1,   // 沿 Z 轴平移 splat（正值=靠近相机，负值=远离相机）
     fsSplatZ:     0,   // 全屏模式下的 splat Z（独立调整）
-    fsSplatScale: 1.5, // 全屏模式下的 splat 缩放（独立调整）
+    fsSplatScale: 1, // 全屏模式下的 splat 缩放（独立调整）
     haloColor:   'rgba(210, 127, 164, 0.65)',
     layers: [
       './files/scene2/layer1.webp',
