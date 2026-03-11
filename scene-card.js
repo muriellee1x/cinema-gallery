@@ -19,7 +19,8 @@ const SCENES = [
     mask:        './files/scene1/card-mask-alpha.webp',
     splat:       './files/3D/sharp_scene1.sog',
     camera:      './camera-scene.json',
-    focalOffset: 0,
+    focalOffset:   0,
+    fsFocalOffset: 0,  // 全屏模式下的焦距偏移（正值=缩小FOV=放大画面）
     splatX:      0,
     splatY:      0,
     splatZ:      -1,   // 沿 Z 轴平移 splat（正值=靠近相机，负值=远离相机）
@@ -46,7 +47,8 @@ const SCENES = [
     mask:        './files/scene2/card-mask-alpha.webp',
     splat:       './files/3D/sharp_scene2.sog',
     camera:      './camera-scene.json',
-    focalOffset: 0,
+    focalOffset:   0,
+    fsFocalOffset: 20, // 全屏模式下的焦距偏移（正值=缩小FOV=放大画面）
     splatX:      0.05,
     splatY:      0,
     splatZ:      -1,   // 沿 Z 轴平移 splat（正值=靠近相机，负值=远离相机）
@@ -514,9 +516,13 @@ function enterFullscreen() {
     isFullscreen = true;
     document.body.classList.add('scene-fullscreen');
 
-    // Apply fullscreen-specific splat Z / scale for current scene
+    // Apply fullscreen-specific FOV / splat Z / scale for current scene
+    const cfg = SCENES[currentSceneIdx];
+    if (cfg.fsFocalOffset) {
+      camera.fov = computeVFOV(DEFAULT_INTRINSICS, cfg.fsFocalOffset);
+      camera.updateProjectionMatrix();
+    }
     if (currentSplatMesh) {
-      const cfg = SCENES[currentSceneIdx];
       currentSplatMesh.position.z = cfg.fsSplatZ ?? cfg.splatZ ?? 0;
       currentSplatMesh.scale.setScalar(SPLAT_SCALE * (cfg.fsSplatScale ?? 1.0));
     }
@@ -542,9 +548,13 @@ function exitFullscreen() {
     isFullscreen = false;
     document.body.classList.remove('scene-fullscreen');
 
-    // Restore normal splat Z / scale for current scene
+    // Restore normal FOV / splat Z / scale for current scene
+    const cfg = SCENES[currentSceneIdx];
+    if (cfg.fsFocalOffset) {
+      camera.fov = computeVFOV(DEFAULT_INTRINSICS, cfg.focalOffset ?? 0);
+      camera.updateProjectionMatrix();
+    }
     if (currentSplatMesh) {
-      const cfg = SCENES[currentSceneIdx];
       currentSplatMesh.position.z = cfg.splatZ ?? 0;
       currentSplatMesh.scale.setScalar(SPLAT_SCALE);
     }
